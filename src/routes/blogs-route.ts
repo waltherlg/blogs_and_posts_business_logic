@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {body, validationResult} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
-import {blogsRepository} from "../repositories/blogs-repository";
+import {blogsService} from "../domain/blogs-service";
 
 export const blogsRouter = Router({})
 
@@ -22,7 +22,7 @@ const websiteUrlValidation = body('websiteUrl')
 
 // GET Returns All blogs
 blogsRouter.get('/', async (req: Request, res: Response) => {
-    const allBlogs = await blogsRepository.getAllBlogs()
+    const allBlogs = await blogsService.getAllBlogs()
     res.status(200).send(allBlogs);
 })
 
@@ -34,14 +34,14 @@ blogsRouter.post('/',
     websiteUrlValidation,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        const newBlog = await blogsRepository.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
+        const newBlog = await blogsService.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
         res.status(201).send(newBlog)
 
     })
 
 //GET blog buy id
 blogsRouter.get('/:id', async (req: Request, res: Response) => {
-    let foundBlog = await blogsRepository.getBlogByID(req.params.id.toString())
+    let foundBlog = await blogsService.getBlogByID(req.params.id.toString())
     if(foundBlog){
         res.status(200).send(foundBlog)
     }
@@ -54,7 +54,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 blogsRouter.delete('/:id',
     basicAuthMiddleware,
     async (req, res) => {
-        const isDeleted = await blogsRepository.deleteBlog(req.params.id)
+        const isDeleted = await blogsService.deleteBlog(req.params.id)
         if (isDeleted) {
             res.sendStatus(204)
         } else {
@@ -70,9 +70,9 @@ blogsRouter.put('/:id',
     websiteUrlValidation,
     inputValidationMiddleware,
     async (req, res) => {
-    const updateBlog = await blogsRepository.updateBlog(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
+    const updateBlog = await blogsService.updateBlog(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
         if (updateBlog){
-            const blog = blogsRepository.getBlogByID(req.params.id)
+            const blog = blogsService.getBlogByID(req.params.id)
             res.sendStatus(204)
         }
         else {

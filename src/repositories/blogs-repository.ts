@@ -49,22 +49,16 @@ export const blogsRepository = {
         }))
     },
 
-    async createBlog(name: string, description: string, websiteUrl: string): Promise<blogTypeOutput> {
-        const newBlog: blogType = {
-            "_id": new ObjectId(),
-            "name": name,
-            "description": description,
-            "websiteUrl": websiteUrl,
-            "createdAt": new Date().toISOString()
-        }
+    async createBlog(newBlog: blogType): Promise<blogTypeOutput> {
         const result = await blogCollection.insertOne(newBlog)
-        return {
+        let createdBlog = {
             id: newBlog._id.toString(),
             name: newBlog.name,
             description: newBlog.description,
             websiteUrl: newBlog.websiteUrl,
             createdAt: newBlog.createdAt
         }
+        return createdBlog
     },
 
     async updateBlog(id: string, name: string, description: string, websiteUrl: string): Promise<boolean>{
