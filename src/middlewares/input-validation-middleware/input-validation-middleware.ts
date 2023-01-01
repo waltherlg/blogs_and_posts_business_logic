@@ -2,11 +2,7 @@
 import {NextFunction, Request, Response} from "express";
 import {body, validationResult} from "express-validator";
 
-export const nameValidation = body('name')
-    .exists({checkFalsy: true, checkNull: true}).bail().withMessage({"message": "name not exist", "field": "name" })
-    .notEmpty().bail().withMessage({"message": "name is empty", "field": "name"})
-    .trim().bail().withMessage({"message": "name is not string", "field": "name" })
-    .isLength({min: 1, max: 15}).bail().withMessage({"message": "wrong length name", "field": "name" })
+
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
@@ -22,3 +18,37 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
     }
 }
 
+
+// validation for blog
+export const nameValidation = body('name')
+    .exists({checkFalsy: true, checkNull: true}).bail().withMessage({"message": "name not exist", "field": "name" })
+    .notEmpty().bail().withMessage({"message": "name is empty", "field": "name"})
+    .trim().bail().withMessage({"message": "name is not string", "field": "name" })
+    .isLength({min: 1, max: 15}).bail().withMessage({"message": "wrong length name", "field": "name" })
+
+export const descriptionValidation = body('description')
+    .exists().bail().withMessage({"message": "description not exist", "field": "description" })
+    .trim().bail().withMessage({"message": "description is not string", "field": "description" })
+    .isLength({max: 500}).withMessage({"message": "wrong length description", "field": "description" })
+
+export const websiteUrlValidation = body('websiteUrl')
+    .exists().bail().withMessage({"message": "websiteUrl not exist", "field": "websiteUrl" })
+    .trim().bail().withMessage({"message": "websiteUrl is not string", "field": "websiteUrl" })
+    .isLength({max: 100}).bail().withMessage({"message": "wrong length websiteUrl", "field": "websiteUrl" })
+    .isURL().bail().withMessage({"message": "wrong websiteUrl", "field": "websiteUrl" })
+
+// validations for post
+export const titleValidation = body('title')
+    .exists().bail().withMessage({message: "title not exist", field: "title" })
+    .trim().bail().withMessage({message: "title is not string", field: "title" })
+    .isLength({min: 1, max: 30}).bail().withMessage({message: "title wrong length", field: "title" })
+
+export const shortDescriptionValidation = body('shortDescription')
+    .exists().bail().withMessage({message: "shortDescription not exist", field: "shortDescription" })
+    .trim().bail().withMessage({message: "shortDescription is not string", field: "shortDescription" })
+    .isLength({min: 1, max: 100}).bail().withMessage({message: "shortDescription wrong length", field: "shortDescription" })
+
+export const contentValidation = body('content')
+    .exists().bail().withMessage({message: "content not exist", field: "content" })
+    .trim().bail().withMessage({message: "content is not string", field: "content" })
+    .isLength({min: 1, max: 1000}).bail().withMessage({message: "wrong content", field: "content" })

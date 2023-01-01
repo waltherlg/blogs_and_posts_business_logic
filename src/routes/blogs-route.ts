@@ -1,25 +1,17 @@
 import {Request, Response, Router} from "express";
-import {body, validationResult} from "express-validator";
-import {inputValidationMiddleware} from "../middlewares/input-validation-middleware/input-validation-middleware";
-import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
+import {body} from "express-validator";
 import {blogsService} from "../domain/blogs-service";
+
+import {RequestWithBody, RequestWithParamsAndBody} from "../models/types";
 
 export const blogsRouter = Router({})
 
 import {nameValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
-import {RequestWithBody, RequestWithParamsAndBody} from "../models/types";
+import {inputValidationMiddleware} from "../middlewares/input-validation-middleware/input-validation-middleware";
+import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
+import {descriptionValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
+import {websiteUrlValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 
-
-const descriptionValidation = body('description')
-    .exists().bail().withMessage({"message": "description not exist", "field": "description" })
-    .trim().bail().withMessage({"message": "description is not string", "field": "description" })
-    .isLength({max: 500}).withMessage({"message": "wrong length description", "field": "description" })
-
-const websiteUrlValidation = body('websiteUrl')
-    .exists().bail().withMessage({"message": "websiteUrl not exist", "field": "websiteUrl" })
-    .trim().bail().withMessage({"message": "websiteUrl is not string", "field": "websiteUrl" })
-    .isLength({max: 100}).bail().withMessage({"message": "wrong length websiteUrl", "field": "websiteUrl" })
-    .isURL().bail().withMessage({"message": "wrong websiteUrl", "field": "websiteUrl" })
 
 // GET Returns All blogs
 blogsRouter.get('/', async (req: Request, res: Response) => {

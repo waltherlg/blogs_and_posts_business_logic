@@ -1,32 +1,20 @@
 import {Request, Response, Router} from "express";
-import {body, validationResult} from "express-validator";
-import { inputValidationMiddleware} from "../middlewares/input-validation-middleware/input-validation-middleware";
-import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
+import {body} from "express-validator";
+
+
 
 import {postsService} from "../domain/posts-service";
 import {blogsService} from "../domain/blogs-service";
+import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody} from "../models/types";
+import {createPostModel, updatePostModel, URIParamsPostModel} from "../models/models";
 
 export const postsRouter = Router({})
 
-
-const titleValidation = body('title')
-    .exists().bail().withMessage({message: "title not exist", field: "title" })
-    .trim().bail().withMessage({message: "title is not string", field: "title" })
-    .isLength({min: 1, max: 30}).bail().withMessage({message: "title wrong length", field: "title" })
-
-const shortDescriptionValidation = body('shortDescription')
-    .exists().bail().withMessage({message: "shortDescription not exist", field: "shortDescription" })
-    .trim().bail().withMessage({message: "shortDescription is not string", field: "shortDescription" })
-    .isLength({min: 1, max: 100}).bail().withMessage({message: "shortDescription wrong length", field: "shortDescription" })
-
-const contentValidation = body('content')
-    .exists().bail().withMessage({message: "content not exist", field: "content" })
-    .trim().bail().withMessage({message: "content is not string", field: "content" })
-    .isLength({min: 1, max: 1000}).bail().withMessage({message: "wrong content", field: "content" })
-
-const blogIdValidation = body('blogId')
-    .exists().bail().withMessage({message: "is not a string", field: "blogId" })
-    .trim().bail().withMessage({message: "wrong blogId", field: "blogId" })
+import {inputValidationMiddleware} from "../middlewares/input-validation-middleware/input-validation-middleware";
+import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
+import {titleValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
+import {shortDescriptionValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
+import {contentValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 
 const createBlogIdValidation = body('blogId')
     .exists().bail().withMessage({message: "is not a string", field: "blogId" })
@@ -45,7 +33,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
 })
 
 //GET return post bi id
-postsRouter.get('/:id', async (req, res) => {
+postsRouter.get('/:id', async (req: RequestWithParams<URIParamsPostModel>, res) => {
     let foundPost = await postsService.getPostByID(req.params.id.toString())
     if (foundPost) {
         res.status(200).send(foundPost)
@@ -72,7 +60,7 @@ postsRouter.post('/',
     contentValidation,
     createBlogIdValidation,
     inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async (req: RequestWithBody<createPostModel>, res: Response) => {
         const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
         res.status(201).send(newPost)
     })
@@ -85,7 +73,7 @@ postsRouter.put('/:id',
     contentValidation,
     createBlogIdValidation,
     inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async (req: RequestWithParamsAndBody<URIParamsPostModel, updatePostModel>, res: Response) => {
         const updatePost = await postsService.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
         if (updatePost) {
             res.sendStatus(204)
@@ -97,7 +85,7 @@ postsRouter.put('/:id',
 // DELETE post
 postsRouter.delete('/:id',
     basicAuthMiddleware,
-    async (req: Request, res: Response) => {
+    async (req: RequestWithParams<URIParamsPostModel>, res: Response) => {
         const isDeleted = await postsService.deletePost(req.params.id)
         if (isDeleted) {
             return res.sendStatus(204)
