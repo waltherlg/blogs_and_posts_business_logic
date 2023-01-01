@@ -12,35 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
 const db_1 = require("./db");
 const mongodb_1 = require("mongodb");
-let posts = [
-    {
-        "_id": "firspost",
-        "title": "music",
-        "shortDescription": "post of music",
-        "content": "content1",
-        "blogId": "blogId1",
-        "blogName": "Bob's trambon",
-        "createdAt": "2022-12-26T13:28:10.174Z"
-    },
-    {
-        "_id": "2",
-        "title": "title2",
-        "shortDescription": "shortDescription2",
-        "content": "content2",
-        "blogId": "blogId2",
-        "blogName": "blogName2",
-        "createdAt": "2022-13-26T13:28:10.174Z"
-    },
-    {
-        "_id": "3",
-        "title": "title3",
-        "shortDescription": "shortDescription2",
-        "content": "content3",
-        "blogId": "blogId3",
-        "blogName": "blogName3",
-        "createdAt": "2022-14-26T13:28:10.174Z"
-    },
-];
 const postCollection = db_1.client.db("blogsAndPosts").collection("post");
 exports.postsRepository = {
     getPostByID(id) {
@@ -95,19 +66,10 @@ exports.postsRepository = {
             }));
         });
     },
-    createPost(title, shortDescription, content, blogId) {
+    createPost(newPost) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newPost = {
-                "_id": new mongodb_1.ObjectId(),
-                "title": title,
-                "shortDescription": shortDescription,
-                "content": content,
-                "blogId": blogId,
-                "blogName": title,
-                "createdAt": new Date().toISOString()
-            };
             const result = yield postCollection.insertOne(newPost);
-            return {
+            let createdPost = {
                 id: newPost._id.toString(),
                 title: newPost.title,
                 shortDescription: newPost.shortDescription,
@@ -116,6 +78,7 @@ exports.postsRepository = {
                 blogName: newPost.blogName,
                 createdAt: newPost.createdAt
             };
+            return createdPost;
         });
     },
     updatePost(id, title, shortDescription, content, blogId) {

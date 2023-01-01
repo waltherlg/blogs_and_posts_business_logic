@@ -12,29 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
 const db_1 = require("./db");
 const mongodb_1 = require("mongodb");
-let blogs = [
-    {
-        "_id": "firstblog",
-        "name": "name1",
-        "description": "description1",
-        "websiteUrl": "websiteUrl",
-        "createdAt": "2022-12-26T13:28:10.174Z"
-    },
-    {
-        "_id": "2",
-        "name": "name2",
-        "description": "description2",
-        "websiteUrl": "websiteUrl",
-        "createdAt": "2022-13-26T13:28:10.174Z"
-    },
-    {
-        "_id": "3",
-        "name": "name3",
-        "description": "description3",
-        "websiteUrl": "websiteUrl",
-        "createdAt": "2022-14-26T13:28:10.174Z"
-    }
-];
 const blogCollection = db_1.client.db("blogsAndPosts").collection("blog");
 exports.blogsRepository = {
     getBlogByID(id) {
@@ -68,23 +45,17 @@ exports.blogsRepository = {
             }));
         });
     },
-    createBlog(name, description, websiteUrl) {
+    createBlog(newBlog) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newBlog = {
-                "_id": new mongodb_1.ObjectId(),
-                "name": name,
-                "description": description,
-                "websiteUrl": websiteUrl,
-                "createdAt": new Date().toISOString()
-            };
             const result = yield blogCollection.insertOne(newBlog);
-            return {
+            let createdBlog = {
                 id: newBlog._id.toString(),
                 name: newBlog.name,
                 description: newBlog.description,
                 websiteUrl: newBlog.websiteUrl,
                 createdAt: newBlog.createdAt
             };
+            return createdBlog;
         });
     },
     updateBlog(id, name, description, websiteUrl) {

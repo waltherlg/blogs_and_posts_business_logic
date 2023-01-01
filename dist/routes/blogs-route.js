@@ -14,7 +14,7 @@ const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware/input-validation-middleware");
 const basic_auth_middleware_1 = require("../middlewares/basic-auth.middleware");
-const blogs_repository_1 = require("../repositories/blogs-repository");
+const blogs_service_1 = require("../domain/blogs-service");
 exports.blogsRouter = (0, express_1.Router)({});
 const input_validation_middleware_2 = require("../middlewares/input-validation-middleware/input-validation-middleware");
 const descriptionValidation = (0, express_validator_1.body)('description')
@@ -28,17 +28,17 @@ const websiteUrlValidation = (0, express_validator_1.body)('websiteUrl')
     .isURL().bail().withMessage({ "message": "wrong websiteUrl", "field": "websiteUrl" });
 // GET Returns All blogs
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const allBlogs = yield blogs_repository_1.blogsRepository.getAllBlogs();
+    const allBlogs = yield blogs_service_1.blogsService.getAllBlogs();
     res.status(200).send(allBlogs);
 }));
 // POST add blogs
 exports.blogsRouter.post('/', basic_auth_middleware_1.basicAuthMiddleware, input_validation_middleware_2.nameValidation, descriptionValidation, websiteUrlValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const newBlog = yield blogs_repository_1.blogsRepository.createBlog(req.body.name, req.body.description, req.body.websiteUrl);
+    const newBlog = yield blogs_service_1.blogsService.createBlog(req.body.name, req.body.description, req.body.websiteUrl);
     res.status(201).send(newBlog);
 }));
 //GET blog buy id
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let foundBlog = yield blogs_repository_1.blogsRepository.getBlogByID(req.params.id.toString());
+    let foundBlog = yield blogs_service_1.blogsService.getBlogByID(req.params.id.toString());
     if (foundBlog) {
         res.status(200).send(foundBlog);
     }
@@ -48,7 +48,7 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
 }));
 // DELETE blog video by id
 exports.blogsRouter.delete('/:id', basic_auth_middleware_1.basicAuthMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const isDeleted = yield blogs_repository_1.blogsRepository.deleteBlog(req.params.id);
+    const isDeleted = yield blogs_service_1.blogsService.deleteBlog(req.params.id);
     if (isDeleted) {
         res.sendStatus(204);
     }
@@ -58,9 +58,9 @@ exports.blogsRouter.delete('/:id', basic_auth_middleware_1.basicAuthMiddleware, 
 }));
 // PUT update blogs by id
 exports.blogsRouter.put('/:id', basic_auth_middleware_1.basicAuthMiddleware, input_validation_middleware_2.nameValidation, descriptionValidation, websiteUrlValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const updateBlog = yield blogs_repository_1.blogsRepository.updateBlog(req.params.id, req.body.name, req.body.description, req.body.websiteUrl);
+    const updateBlog = yield blogs_service_1.blogsService.updateBlog(req.params.id, req.body.name, req.body.description, req.body.websiteUrl);
     if (updateBlog) {
-        const blog = blogs_repository_1.blogsRepository.getBlogByID(req.params.id);
+        const blog = blogs_service_1.blogsService.getBlogByID(req.params.id);
         res.sendStatus(204);
     }
     else {

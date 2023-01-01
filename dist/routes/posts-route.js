@@ -14,8 +14,8 @@ const express_1 = require("express");
 const express_validator_1 = require("express-validator");
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware/input-validation-middleware");
 const basic_auth_middleware_1 = require("../middlewares/basic-auth.middleware");
-const posts_repository_1 = require("../repositories/posts-repository");
-const blogs_repository_1 = require("../repositories/blogs-repository");
+const posts_service_1 = require("../domain/posts-service");
+const blogs_service_1 = require("../domain/blogs-service");
 exports.postsRouter = (0, express_1.Router)({});
 const titleValidation = (0, express_validator_1.body)('title')
     .exists().bail().withMessage({ message: "title not exist", field: "title" })
@@ -36,19 +36,19 @@ const createBlogIdValidation = (0, express_validator_1.body)('blogId')
     .exists().bail().withMessage({ message: "is not a string", field: "blogId" })
     .trim().bail().withMessage({ message: "wrong blogId", field: "blogId" })
     .custom((value) => __awaiter(void 0, void 0, void 0, function* () {
-    const isBlogIdExist = yield blogs_repository_1.blogsRepository.getBlogByID(value);
+    const isBlogIdExist = yield blogs_service_1.blogsService.getBlogByID(value);
     if (!isBlogIdExist)
         throw new Error;
     return true;
 })).withMessage({ "message": "blogId not exist", "field": "blogId" });
 // GET Returns All posts
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const allPosts = yield posts_repository_1.postsRepository.getAllPosts();
+    const allPosts = yield posts_service_1.postsService.getAllPosts();
     res.status(200).send(allPosts);
 }));
 //GET return post bi id
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let foundPost = yield posts_repository_1.postsRepository.getPostByID(req.params.id.toString());
+    let foundPost = yield posts_service_1.postsService.getPostByID(req.params.id.toString());
     if (foundPost) {
         res.status(200).send(foundPost);
     }
@@ -58,7 +58,7 @@ exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
 }));
 //GET return post bi id
 exports.postsRouter.get('/blogid/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let foundPost = yield posts_repository_1.postsRepository.getPostByBlogsID(req.params.id.toString());
+    let foundPost = yield posts_service_1.postsService.getPostByBlogsID(req.params.id.toString());
     if (foundPost) {
         res.status(200).send(foundPost);
     }
@@ -68,12 +68,12 @@ exports.postsRouter.get('/blogid/:id', (req, res) => __awaiter(void 0, void 0, v
 }));
 // POST add blogs
 exports.postsRouter.post('/', basic_auth_middleware_1.basicAuthMiddleware, titleValidation, shortDescriptionValidation, contentValidation, createBlogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const newPost = yield posts_repository_1.postsRepository.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
+    const newPost = yield posts_service_1.postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
     res.status(201).send(newPost);
 }));
 // PUT update post
 exports.postsRouter.put('/:id', basic_auth_middleware_1.basicAuthMiddleware, shortDescriptionValidation, titleValidation, contentValidation, createBlogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const updatePost = yield posts_repository_1.postsRepository.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
+    const updatePost = yield posts_service_1.postsService.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
     if (updatePost) {
         res.sendStatus(204);
     }
@@ -83,7 +83,7 @@ exports.postsRouter.put('/:id', basic_auth_middleware_1.basicAuthMiddleware, sho
 }));
 // DELETE post
 exports.postsRouter.delete('/:id', basic_auth_middleware_1.basicAuthMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const isDeleted = yield posts_repository_1.postsRepository.deletePost(req.params.id);
+    const isDeleted = yield posts_service_1.postsService.deletePost(req.params.id);
     if (isDeleted) {
         return res.sendStatus(204);
     }

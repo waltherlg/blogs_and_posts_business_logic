@@ -11,13 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.testingRouter = void 0;
 const express_1 = require("express");
-const posts_repository_1 = require("../repositories/posts-repository");
-const blogs_repository_1 = require("../repositories/blogs-repository");
+const posts_service_1 = require("../domain/posts-service");
+const blogs_service_1 = require("../domain/blogs-service");
 exports.testingRouter = (0, express_1.Router)({});
 exports.testingRouter.delete('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req);
-    const isPostsDeleted = yield posts_repository_1.postsRepository.deleteAllPosts();
-    const isBlogsDeleted = yield blogs_repository_1.blogsRepository.deleteAllBlogs();
+    const isPostsDeleted = yield posts_service_1.postsService.deleteAllPosts();
+    const isBlogsDeleted = yield blogs_service_1.blogsService.deleteAllBlogs();
     if (isPostsDeleted && isBlogsDeleted) {
         return res.sendStatus(204);
     }

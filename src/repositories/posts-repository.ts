@@ -1,25 +1,8 @@
 import {client} from "./db";
 import {ObjectId} from "mongodb";
-// import {blogType} from "./blogs-repository";
 
-type postTypeOutput = {
-    id: string,
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string,
-    createdAt: string
-}
-type postType = {
-    _id: string | ObjectId,
-    title: string,
-    shortDescription: string,
-    content: string,
-    blogId: string,
-    blogName: string,
-    createdAt: string
-}
+import {postType} from "../models/types";
+import {postTypeOutput} from "../models/types";
 
 
 const postCollection = client.db("blogsAndPosts").collection<postType>("post")
@@ -74,18 +57,9 @@ export const postsRepository = {
         }))
     },
 
-    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<postTypeOutput> {
-        const newPost: postType = {
-            "_id": new ObjectId(),
-            "title": title,
-            "shortDescription": shortDescription,
-            "content": content,
-            "blogId": blogId,
-            "blogName": title,
-            "createdAt": new Date().toISOString()
-        }
+    async createPost(newPost: postType): Promise<postTypeOutput> {
         const result = await postCollection.insertOne(newPost)
-        return {
+        let createdPost = {
             id: newPost._id.toString(),
             title: newPost.title,
             shortDescription: newPost.shortDescription,
@@ -93,7 +67,8 @@ export const postsRepository = {
             blogId: newPost.blogId,
             blogName: newPost.blogName,
             createdAt: newPost.createdAt
-        }
+        };
+        return createdPost;
     },
 
     async updatePost(

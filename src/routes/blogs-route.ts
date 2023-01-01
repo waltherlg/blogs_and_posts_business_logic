@@ -7,6 +7,7 @@ import {blogsService} from "../domain/blogs-service";
 export const blogsRouter = Router({})
 
 import {nameValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
+import {RequestWithBody, RequestWithParamsAndBody} from "../models/types";
 
 
 const descriptionValidation = body('description')
@@ -33,7 +34,7 @@ blogsRouter.post('/',
     descriptionValidation,
     websiteUrlValidation,
     inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async (req: RequestWithParamsAndBody<any,any>, res: Response) => {
         const newBlog = await blogsService.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
         res.status(201).send(newBlog)
 

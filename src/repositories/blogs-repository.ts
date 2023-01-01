@@ -1,21 +1,9 @@
 import {client} from "./db";
 import {ObjectId} from "mongodb";
+import {blogType} from "../models/types";
+import {blogTypeOutput} from "../models/types";
 
-export type blogTypeOutput = {
-    id: string,
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: string
-}
 
-export type blogType = {
-    _id: string | ObjectId,
-    name: string,
-    description: string,
-    websiteUrl: string,
-    createdAt: string
-}
 const blogCollection = client.db("blogsAndPosts").collection<blogType>("blog")
 
 export const blogsRepository = {
