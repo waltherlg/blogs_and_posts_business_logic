@@ -12,26 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRouter = void 0;
 const express_1 = require("express");
 const express_validator_1 = require("express-validator");
-const input_validation_middleware_1 = require("../middlewares/input-validation-middleware/input-validation-middleware");
-const basic_auth_middleware_1 = require("../middlewares/basic-auth.middleware");
 const posts_service_1 = require("../domain/posts-service");
 const blogs_service_1 = require("../domain/blogs-service");
 exports.postsRouter = (0, express_1.Router)({});
-const titleValidation = (0, express_validator_1.body)('title')
-    .exists().bail().withMessage({ message: "title not exist", field: "title" })
-    .trim().bail().withMessage({ message: "title is not string", field: "title" })
-    .isLength({ min: 1, max: 30 }).bail().withMessage({ message: "title wrong length", field: "title" });
-const shortDescriptionValidation = (0, express_validator_1.body)('shortDescription')
-    .exists().bail().withMessage({ message: "shortDescription not exist", field: "shortDescription" })
-    .trim().bail().withMessage({ message: "shortDescription is not string", field: "shortDescription" })
-    .isLength({ min: 1, max: 100 }).bail().withMessage({ message: "shortDescription wrong length", field: "shortDescription" });
-const contentValidation = (0, express_validator_1.body)('content')
-    .exists().bail().withMessage({ message: "content not exist", field: "content" })
-    .trim().bail().withMessage({ message: "content is not string", field: "content" })
-    .isLength({ min: 1, max: 1000 }).bail().withMessage({ message: "wrong content", field: "content" });
-const blogIdValidation = (0, express_validator_1.body)('blogId')
-    .exists().bail().withMessage({ message: "is not a string", field: "blogId" })
-    .trim().bail().withMessage({ message: "wrong blogId", field: "blogId" });
+const input_validation_middleware_1 = require("../middlewares/input-validation-middleware/input-validation-middleware");
+const basic_auth_middleware_1 = require("../middlewares/basic-auth.middleware");
+const input_validation_middleware_2 = require("../middlewares/input-validation-middleware/input-validation-middleware");
+const input_validation_middleware_3 = require("../middlewares/input-validation-middleware/input-validation-middleware");
+const input_validation_middleware_4 = require("../middlewares/input-validation-middleware/input-validation-middleware");
 const createBlogIdValidation = (0, express_validator_1.body)('blogId')
     .exists().bail().withMessage({ message: "is not a string", field: "blogId" })
     .trim().bail().withMessage({ message: "wrong blogId", field: "blogId" })
@@ -46,7 +34,7 @@ exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     const allPosts = yield posts_service_1.postsService.getAllPosts();
     res.status(200).send(allPosts);
 }));
-//GET return post bi id
+//GET return post by id
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let foundPost = yield posts_service_1.postsService.getPostByID(req.params.id.toString());
     if (foundPost) {
@@ -56,9 +44,9 @@ exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
         res.sendStatus(404);
     }
 }));
-//GET return post bi id
-exports.postsRouter.get('/blogid/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let foundPost = yield posts_service_1.postsService.getPostByBlogsID(req.params.id.toString());
+//GET return post by blog id
+exports.postsRouter.get('/blogid/:blogId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let foundPost = yield posts_service_1.postsService.getPostByBlogsID(req.params.blogId.toString());
     if (foundPost) {
         res.status(200).send(foundPost);
     }
@@ -67,12 +55,12 @@ exports.postsRouter.get('/blogid/:id', (req, res) => __awaiter(void 0, void 0, v
     }
 }));
 // POST add blogs
-exports.postsRouter.post('/', basic_auth_middleware_1.basicAuthMiddleware, titleValidation, shortDescriptionValidation, contentValidation, createBlogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.post('/', basic_auth_middleware_1.basicAuthMiddleware, input_validation_middleware_2.titleValidation, input_validation_middleware_3.shortDescriptionValidation, input_validation_middleware_4.contentValidation, createBlogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newPost = yield posts_service_1.postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
     res.status(201).send(newPost);
 }));
 // PUT update post
-exports.postsRouter.put('/:id', basic_auth_middleware_1.basicAuthMiddleware, shortDescriptionValidation, titleValidation, contentValidation, createBlogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postsRouter.put('/:id', basic_auth_middleware_1.basicAuthMiddleware, input_validation_middleware_3.shortDescriptionValidation, input_validation_middleware_2.titleValidation, input_validation_middleware_4.contentValidation, createBlogIdValidation, input_validation_middleware_1.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const updatePost = yield posts_service_1.postsService.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId);
     if (updatePost) {
         res.sendStatus(204);

@@ -6,7 +6,7 @@ import {body} from "express-validator";
 import {postsService} from "../domain/posts-service";
 import {blogsService} from "../domain/blogs-service";
 import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody} from "../models/types";
-import {createPostModel, updatePostModel, URIParamsPostModel} from "../models/models";
+import {createPostModel, updatePostModel, URIParamsGetPostByBlogIdModel, URIParamsPostModel} from "../models/models";
 
 export const postsRouter = Router({})
 
@@ -32,7 +32,7 @@ postsRouter.get('/', async (req: Request, res: Response) => {
     res.status(200).send(allPosts);
 })
 
-//GET return post bi id
+//GET return post by id
 postsRouter.get('/:id', async (req: RequestWithParams<URIParamsPostModel>, res) => {
     let foundPost = await postsService.getPostByID(req.params.id.toString())
     if (foundPost) {
@@ -42,9 +42,9 @@ postsRouter.get('/:id', async (req: RequestWithParams<URIParamsPostModel>, res) 
     }
 })
 
-//GET return post bi id
-postsRouter.get('/blogid/:id', async (req, res) => {
-    let foundPost = await postsService.getPostByBlogsID(req.params.id.toString())
+//GET return post by blog id
+postsRouter.get('/blogid/:blogId', async (req: RequestWithParams<URIParamsGetPostByBlogIdModel>, res) => {
+    let foundPost = await postsService.getPostByBlogsID(req.params.blogId.toString())
     if (foundPost) {
         res.status(200).send(foundPost)
     } else {

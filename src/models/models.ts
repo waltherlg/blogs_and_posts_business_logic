@@ -13,9 +13,9 @@ export type URIParamsBlogModel = {
     id: string
 }
 
-export type URIParamsPostByBlogIdModel = {
+export type URIParamsGetPostByBlogIdModel = {
     /**
-     * blogId
+     * When you need get post by blog id
      */
     blogId: string
 }
@@ -32,4 +32,16 @@ export type updatePostModel = {
     shortDescription: string,
     content: string,
     blogId: string,
+}
+
+export type createBlogModel = {
+    name: string,
+    description: string,
+    websiteUrl: string,
+}
+
+export type updateBlogModel = {
+    name: string,
+    description: string,
+    websiteUrl: string,
 }

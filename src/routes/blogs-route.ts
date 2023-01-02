@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {body} from "express-validator";
 import {blogsService} from "../domain/blogs-service";
 
-import {RequestWithBody, RequestWithParamsAndBody} from "../models/types";
+import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody} from "../models/types";
 
 export const blogsRouter = Router({})
 
@@ -11,6 +11,7 @@ import {inputValidationMiddleware} from "../middlewares/input-validation-middlew
 import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
 import {descriptionValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {websiteUrlValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
+import {createBlogModel, updateBlogModel, URIParamsBlogModel} from "../models/models";
 
 
 // GET Returns All blogs
@@ -26,14 +27,14 @@ blogsRouter.post('/',
     descriptionValidation,
     websiteUrlValidation,
     inputValidationMiddleware,
-    async (req: RequestWithParamsAndBody<any,any>, res: Response) => {
+    async (req: RequestWithBody<createBlogModel>, res: Response) => {
         const newBlog = await blogsService.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
         res.status(201).send(newBlog)
 
     })
 
 //GET blog buy id
-blogsRouter.get('/:id', async (req: Request, res: Response) => {
+blogsRouter.get('/:id', async (req: RequestWithParams<URIParamsBlogModel>, res: Response) => {
     let foundBlog = await blogsService.getBlogByID(req.params.id.toString())
     if(foundBlog){
         res.status(200).send(foundBlog)
@@ -46,7 +47,7 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 // DELETE blog video by id
 blogsRouter.delete('/:id',
     basicAuthMiddleware,
-    async (req, res) => {
+    async (req: RequestWithParams<URIParamsBlogModel>, res) => {
         const isDeleted = await blogsService.deleteBlog(req.params.id)
         if (isDeleted) {
             res.sendStatus(204)
@@ -62,7 +63,7 @@ blogsRouter.put('/:id',
     descriptionValidation,
     websiteUrlValidation,
     inputValidationMiddleware,
-    async (req, res) => {
+    async (req: RequestWithParamsAndBody<URIParamsBlogModel, updateBlogModel>, res) => {
     const updateBlog = await blogsService.updateBlog(req.params.id, req.body.name, req.body.description, req.body.websiteUrl)
         if (updateBlog){
             const blog = blogsService.getBlogByID(req.params.id)
