@@ -18,10 +18,21 @@ const input_validation_middleware_2 = require("../middlewares/input-validation-m
 const basic_auth_middleware_1 = require("../middlewares/basic-auth.middleware");
 const input_validation_middleware_3 = require("../middlewares/input-validation-middleware/input-validation-middleware");
 const input_validation_middleware_4 = require("../middlewares/input-validation-middleware/input-validation-middleware");
+const blog_query_repository_1 = require("../repositories/blog-query-repository");
 // GET Returns All blogs
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const allBlogs = yield blogs_service_1.blogsService.getAllBlogs();
-    res.status(200).send(allBlogs);
+    try {
+        let searchNameTerm = req.query.searchNameTerm ? req.query.searchNameTerm : 'null';
+        let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt';
+        let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc';
+        let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1';
+        let pageSize = req.query.pageSize ? req.query.pageSize : '10';
+        const allBlogs = yield blog_query_repository_1.blogsQueryRepo.getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize);
+        res.status(200).send(allBlogs);
+    }
+    catch (e) {
+        res.status(500).send(e);
+    }
 }));
 // POST add blogs
 exports.blogsRouter.post('/', basic_auth_middleware_1.basicAuthMiddleware, input_validation_middleware_1.nameValidation, input_validation_middleware_3.descriptionValidation, input_validation_middleware_4.websiteUrlValidation, input_validation_middleware_2.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {

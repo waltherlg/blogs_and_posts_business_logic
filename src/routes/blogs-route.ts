@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {body} from "express-validator";
 import {blogsService} from "../domain/blogs-service";
 
-import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody} from "../models/types";
+import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../models/types";
 
 export const blogsRouter = Router({})
 
@@ -11,13 +11,25 @@ import {inputValidationMiddleware} from "../middlewares/input-validation-middlew
 import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
 import {descriptionValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {websiteUrlValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
-import {createBlogModel, updateBlogModel, URIParamsBlogModel} from "../models/models";
+import {createBlogModel, requestBlogsQueryModel, updateBlogModel, URIParamsBlogModel} from "../models/models";
+import {blogsQueryRepo} from "../repositories/blog-query-repository";
 
 
 // GET Returns All blogs
-blogsRouter.get('/', async (req: Request, res: Response) => {
-    const allBlogs = await blogsService.getAllBlogs()
-    res.status(200).send(allBlogs);
+blogsRouter.get('/', async (req: RequestWithQuery<requestBlogsQueryModel>, res: Response) => {
+    try {
+        let searchNameTerm = req.query.searchNameTerm ? req.query.searchNameTerm: 'null'
+        let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt'
+        let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc'
+        let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1'
+        let pageSize = req.query.pageSize ? req.query.pageSize : '10'
+        const allBlogs = await blogsQueryRepo.getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize)
+        res.status(200).send(allBlogs);
+    }
+    catch (e){
+        res.status(500).send(e)
+    }
+
 })
 
 // POST add blogs

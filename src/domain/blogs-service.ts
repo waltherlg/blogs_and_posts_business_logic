@@ -9,9 +9,9 @@ export const blogsService = {
         return blogsRepository.getBlogByID(id)
     },
 
-    async getAllBlogs(): Promise<blogTypeOutput[]> {
-        return blogsRepository.getAllBlogs()
-    },
+    // async getAllBlogs(): Promise<blogTypeOutput[]> {
+    //     return blogsRepository.getAllBlogs()
+    // },
 
     async createBlog(name: string, description: string, websiteUrl: string): Promise<blogTypeOutput> {
         const newBlog: blogType = {

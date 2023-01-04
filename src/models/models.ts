@@ -1,3 +1,4 @@
+import {blogTypeOutput} from "./types";
 
 export type URIParamsPostModel = {
     /**
@@ -44,4 +45,20 @@ export type updateBlogModel = {
     name: string,
     description: string,
     websiteUrl: string,
+}
+
+export type requestBlogsQueryModel = {
+    searchNameTerm: string,
+    sortBy: string,
+    sortDirection: string,
+    pageNumber: string,
+    pageSize: string,
+}
+
+export type paginationBlogOutputModel = {
+    pageCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: any
 }

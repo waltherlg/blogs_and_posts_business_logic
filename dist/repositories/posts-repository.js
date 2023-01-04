@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postsRepository = void 0;
+exports.postsRepository = exports.postCollection = void 0;
 const db_1 = require("./db");
 const mongodb_1 = require("mongodb");
-const postCollection = db_1.client.db("blogsAndPosts").collection("post");
+exports.postCollection = db_1.client.db("blogsAndPosts").collection("post");
 exports.postsRepository = {
     getPostByID(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -20,7 +20,7 @@ exports.postsRepository = {
                 return null;
             }
             let _id = new mongodb_1.ObjectId(id);
-            const post = yield postCollection.findOne({ _id: _id });
+            const post = yield exports.postCollection.findOne({ _id: _id });
             if (!post) {
                 return null;
             }
@@ -37,7 +37,7 @@ exports.postsRepository = {
     },
     getPostByBlogsID(blogId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const post = yield postCollection.findOne({ blogId: blogId });
+            const post = yield exports.postCollection.findOne({ blogId: blogId });
             if (!post) {
                 return null;
             }
@@ -54,7 +54,7 @@ exports.postsRepository = {
     },
     getAllPosts() {
         return __awaiter(this, void 0, void 0, function* () {
-            let outPosts = yield postCollection.find({}).toArray();
+            let outPosts = yield exports.postCollection.find({}).toArray();
             return outPosts.map((posts) => ({
                 id: posts._id.toString(),
                 title: posts.title,
@@ -68,7 +68,7 @@ exports.postsRepository = {
     },
     createPost(newPost) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield postCollection.insertOne(newPost);
+            const result = yield exports.postCollection.insertOne(newPost);
             let createdPost = {
                 id: newPost._id.toString(),
                 title: newPost.title,
@@ -85,7 +85,7 @@ exports.postsRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             if (mongodb_1.ObjectId.isValid(id)) {
                 let _id = new mongodb_1.ObjectId(id);
-                const result = yield postCollection
+                const result = yield exports.postCollection
                     .updateOne({ _id: _id }, { $set: {
                         title: title,
                         shortDescription: shortDescription,
@@ -102,7 +102,7 @@ exports.postsRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             if (mongodb_1.ObjectId.isValid(id)) {
                 let _id = new mongodb_1.ObjectId(id);
-                const result = yield postCollection.deleteOne({ _id: _id });
+                const result = yield exports.postCollection.deleteOne({ _id: _id });
                 return result.deletedCount === 1;
             }
             else
@@ -111,7 +111,7 @@ exports.postsRepository = {
     },
     deleteAllPosts() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield postCollection.deleteMany({});
+            const result = yield exports.postCollection.deleteMany({});
             return true;
         });
     },

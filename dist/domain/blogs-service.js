@@ -18,11 +18,9 @@ exports.blogsService = {
             return blogs_repository_1.blogsRepository.getBlogByID(id);
         });
     },
-    getAllBlogs() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return blogs_repository_1.blogsRepository.getAllBlogs();
-        });
-    },
+    // async getAllBlogs(): Promise<blogTypeOutput[]> {
+    //     return blogsRepository.getAllBlogs()
+    // },
     createBlog(name, description, websiteUrl) {
         return __awaiter(this, void 0, void 0, function* () {
             const newBlog = {

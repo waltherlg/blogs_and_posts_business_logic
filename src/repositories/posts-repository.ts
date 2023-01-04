@@ -5,7 +5,7 @@ import {postType} from "../models/types";
 import {postTypeOutput} from "../models/types";
 
 
-const postCollection = client.db("blogsAndPosts").collection<postType>("post")
+export const postCollection = client.db("blogsAndPosts").collection<postType>("post")
 export const postsRepository = {
 
     async getPostByID(id: string): Promise<postTypeOutput | null> {

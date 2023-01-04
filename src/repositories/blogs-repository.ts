@@ -4,7 +4,7 @@ import {blogType} from "../models/types";
 import {blogTypeOutput} from "../models/types";
 
 
-const blogCollection = client.db("blogsAndPosts").collection<blogType>("blog")
+export const blogCollection = client.db("blogsAndPosts").collection<blogType>("blog")
 
 export const blogsRepository = {
 

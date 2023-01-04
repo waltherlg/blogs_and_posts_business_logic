@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsRepository = void 0;
+exports.blogsRepository = exports.blogCollection = void 0;
 const db_1 = require("./db");
 const mongodb_1 = require("mongodb");
-const blogCollection = db_1.client.db("blogsAndPosts").collection("blog");
+exports.blogCollection = db_1.client.db("blogsAndPosts").collection("blog");
 exports.blogsRepository = {
     getBlogByID(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -20,7 +20,7 @@ exports.blogsRepository = {
                 return null;
             }
             let _id = new mongodb_1.ObjectId(id);
-            const blog = yield blogCollection.findOne({ _id: _id });
+            const blog = yield exports.blogCollection.findOne({ _id: _id });
             if (!blog) {
                 return null;
             }
@@ -35,7 +35,7 @@ exports.blogsRepository = {
     },
     getAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            let outBlogs = yield blogCollection.find({}).toArray();
+            let outBlogs = yield exports.blogCollection.find({}).toArray();
             return outBlogs.map((blogs) => ({
                 id: blogs._id.toString(),
                 name: blogs.name,
@@ -47,7 +47,7 @@ exports.blogsRepository = {
     },
     createBlog(newBlog) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield blogCollection.insertOne(newBlog);
+            const result = yield exports.blogCollection.insertOne(newBlog);
             let createdBlog = {
                 id: newBlog._id.toString(),
                 name: newBlog.name,
@@ -62,7 +62,7 @@ exports.blogsRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             if (mongodb_1.ObjectId.isValid(id)) {
                 let _id = new mongodb_1.ObjectId(id);
-                const result = yield blogCollection
+                const result = yield exports.blogCollection
                     .updateOne({ _id: _id }, { $set: { name: name, description: description, websiteUrl: websiteUrl } });
                 return result.matchedCount === 1;
             }
@@ -74,7 +74,7 @@ exports.blogsRepository = {
         return __awaiter(this, void 0, void 0, function* () {
             if (mongodb_1.ObjectId.isValid(id)) {
                 let _id = new mongodb_1.ObjectId(id);
-                const result = yield blogCollection.deleteOne({ _id: _id });
+                const result = yield exports.blogCollection.deleteOne({ _id: _id });
                 return result.deletedCount === 1;
             }
             else
@@ -83,7 +83,7 @@ exports.blogsRepository = {
     },
     deleteAllBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield blogCollection
+            const result = yield exports.blogCollection
                 .deleteMany({});
             return true;
         });
