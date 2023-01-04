@@ -42,14 +42,14 @@ export const blogsQueryRepo = {
 
         let pageCount = Math.ceil(+blogsCount / +pageSize)
 
-        let outputResult: paginationBlogOutputModel  = {
+        let outputBlogs: paginationBlogOutputModel  = {
             pageCount: pageCount,
             page: +pageNumber,
             pageSize: +pageSize,
             totalCount: blogsCount,
             items: outBlogs
         }
-        return outputResult
+        return outputBlogs
     },
 
 

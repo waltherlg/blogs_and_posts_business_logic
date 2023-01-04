@@ -9,41 +9,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blogsQueryRepo = void 0;
-const blogs_repository_1 = require("./blogs-repository");
+exports.postsQueryRepo = void 0;
+const posts_repository_1 = require("./posts-repository");
 function sort(sortDirection) {
     return (sortDirection === 'desc') ? -1 : 1;
 }
 function skipped(pageNumber, pageSize) {
     return (+pageNumber - 1) * (+pageSize);
 }
-exports.blogsQueryRepo = {
-    getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize) {
+exports.postsQueryRepo = {
+    getAllPosts(sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
-            let blogs = yield blogs_repository_1.blogCollection.find({})
+            let posts = yield posts_repository_1.postCollection.find({})
                 .skip(skipped(pageNumber, pageSize))
                 .limit(+pageSize)
                 .sort({ [sortBy]: sort(sortDirection) })
                 .toArray();
-            let outBlogs = blogs.map((blogs) => {
+            let outPosts = posts.map((posts) => {
                 return {
-                    id: blogs._id.toString(),
-                    name: blogs.name,
-                    description: blogs.description,
-                    websiteUrl: blogs.websiteUrl,
-                    createdAt: blogs.createdAt
+                    id: posts._id.toString(),
+                    title: posts.title,
+                    shortDescription: posts.shortDescription,
+                    content: posts.content,
+                    blogId: posts.blogId,
+                    blogName: posts.blogName,
+                    createdAt: posts.createdAt
                 };
             });
-            let blogsCount = yield blogs_repository_1.blogCollection.countDocuments({});
-            let pageCount = Math.ceil(+blogsCount / +pageSize);
-            let outputBlogs = {
+            let postsCount = yield posts_repository_1.postCollection.countDocuments({});
+            let pageCount = Math.ceil(+postsCount / +pageSize);
+            let outputPosts = {
                 pageCount: pageCount,
                 page: +pageNumber,
                 pageSize: +pageSize,
-                totalCount: blogsCount,
-                items: outBlogs
+                totalCount: postsCount,
+                items: outPosts
             };
-            return outputBlogs;
+            return outputPosts;
         });
-    },
+    }
 };

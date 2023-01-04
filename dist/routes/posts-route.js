@@ -20,6 +20,7 @@ const basic_auth_middleware_1 = require("../middlewares/basic-auth.middleware");
 const input_validation_middleware_2 = require("../middlewares/input-validation-middleware/input-validation-middleware");
 const input_validation_middleware_3 = require("../middlewares/input-validation-middleware/input-validation-middleware");
 const input_validation_middleware_4 = require("../middlewares/input-validation-middleware/input-validation-middleware");
+const post_query_repository_1 = require("../repositories/post-query-repository");
 const createBlogIdValidation = (0, express_validator_1.body)('blogId')
     .exists().bail().withMessage({ message: "is not a string", field: "blogId" })
     .trim().bail().withMessage({ message: "wrong blogId", field: "blogId" })
@@ -31,8 +32,17 @@ const createBlogIdValidation = (0, express_validator_1.body)('blogId')
 })).withMessage({ "message": "blogId not exist", "field": "blogId" });
 // GET Returns All posts
 exports.postsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const allPosts = yield posts_service_1.postsService.getAllPosts();
-    res.status(200).send(allPosts);
+    try {
+        let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt';
+        let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc';
+        let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1';
+        let pageSize = req.query.pageSize ? req.query.pageSize : '10';
+        const allPosts = yield post_query_repository_1.postsQueryRepo.getAllPosts(sortBy, sortDirection, pageNumber, pageSize);
+        res.status(200).send(allPosts);
+    }
+    catch (e) {
+        res.status(500).send(e);
+    }
 }));
 //GET return post by id
 exports.postsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

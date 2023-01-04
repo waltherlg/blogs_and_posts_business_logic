@@ -5,8 +5,14 @@ import {body} from "express-validator";
 
 import {postsService} from "../domain/posts-service";
 import {blogsService} from "../domain/blogs-service";
-import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody} from "../models/types";
-import {createPostModel, updatePostModel, URIParamsGetPostByBlogIdModel, URIParamsPostModel} from "../models/models";
+import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../models/types";
+import {
+    createPostModel,
+    requestPostsQueryModel,
+    updatePostModel,
+    URIParamsGetPostByBlogIdModel,
+    URIParamsPostModel
+} from "../models/models";
 
 export const postsRouter = Router({})
 
@@ -15,6 +21,7 @@ import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
 import {titleValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {shortDescriptionValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {contentValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
+import {postsQueryRepo} from "../repositories/post-query-repository";
 
 const createBlogIdValidation = body('blogId')
     .exists().bail().withMessage({message: "is not a string", field: "blogId" })
@@ -27,9 +34,18 @@ const createBlogIdValidation = body('blogId')
 
 
 // GET Returns All posts
-postsRouter.get('/', async (req: Request, res: Response) => {
-    const allPosts = await postsService.getAllPosts()
-    res.status(200).send(allPosts);
+postsRouter.get('/', async (req: RequestWithQuery<requestPostsQueryModel>, res: Response) => {
+    try {
+        let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt'
+        let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc'
+        let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1'
+        let pageSize = req.query.pageSize ? req.query.pageSize : '10'
+        const allPosts = await postsQueryRepo.getAllPosts(sortBy, sortDirection, pageNumber, pageSize)
+        res.status(200).send(allPosts);
+    }
+    catch (e){
+        res.status(500).send(e)
+    }
 })
 
 //GET return post by id

@@ -55,7 +55,22 @@ export type requestBlogsQueryModel = {
     pageSize: string,
 }
 
+export type requestPostsQueryModel = {
+    sortBy: string,
+    sortDirection: string,
+    pageNumber: string,
+    pageSize: string,
+}
+
 export type paginationBlogOutputModel = {
+    pageCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: any
+}
+
+export type paginationPostOutputModel = {
     pageCount: number,
     page: number,
     pageSize: number,
