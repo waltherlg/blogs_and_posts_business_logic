@@ -42,8 +42,12 @@ exports.blogsRouter.post('/', basic_auth_middleware_1.basicAuthMiddleware, input
     res.status(201).send(newBlog);
 }));
 // POST create post for specific blog
-exports.blogsRouter.post('/:blogId/posts', basic_auth_middleware_1.basicAuthMiddleware, input_validation_middleware_1.existParamBlogIdValidation, input_validation_middleware_1.titleValidation, input_validation_middleware_1.shortDescriptionValidation, input_validation_middleware_1.contentValidation, input_validation_middleware_2.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const newPost = yield posts_service_1.postsService.createPostByBlogId(req.body.title, req.body.shortDescription, req.body.content, req.params.blogId);
+exports.blogsRouter.post('/:blogId/posts', basic_auth_middleware_1.basicAuthMiddleware, input_validation_middleware_1.titleValidation, input_validation_middleware_1.shortDescriptionValidation, input_validation_middleware_1.contentValidation, input_validation_middleware_2.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let foundBlog = yield blogs_service_1.blogsService.getBlogByID(req.params.blogId.toString());
+    if (!foundBlog) {
+        res.sendStatus(404);
+    }
+    const newPost = yield posts_service_1.postsService.createPostByBlogId(req.body.title, req.body.shortDescription, req.body.content, req.params.blogId.toString());
     res.status(201).send(newPost);
 }));
 //GET blog buy id
