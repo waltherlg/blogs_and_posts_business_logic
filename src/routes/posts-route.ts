@@ -27,17 +27,8 @@ import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
 import {titleValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {shortDescriptionValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {contentValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
+import {existBlogIdValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {postsQueryRepo} from "../repositories/post-query-repository";
-
-const createBlogIdValidation = body('blogId')
-    .exists().bail().withMessage({message: "is not a string", field: "blogId" })
-    .trim().bail().withMessage({message: "wrong blogId", field: "blogId" })
-    .custom(async value => {
-        const isBlogIdExist = await blogsService.getBlogByID(value)
-        if (!isBlogIdExist) throw new Error
-        return true
-    }).withMessage({"message": "blogId not exist", "field": "blogId" })
-
 
 // GET Returns All posts
 postsRouter.get('/', async (req: RequestWithQuery<requestPostsQueryModel>, res: Response) => {
@@ -80,7 +71,7 @@ postsRouter.post('/',
     titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    createBlogIdValidation,
+    existBlogIdValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<createPostModel>, res: Response) => {
         const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)
@@ -90,10 +81,10 @@ postsRouter.post('/',
 // PUT update post
 postsRouter.put('/:id',
     basicAuthMiddleware,
+    existBlogIdValidation,
     shortDescriptionValidation,
     titleValidation,
     contentValidation,
-    createBlogIdValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsAndBody<URIParamsPostModel, updatePostModel>, res: Response) => {
         const updatePost = await postsService.updatePost(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.blogId)

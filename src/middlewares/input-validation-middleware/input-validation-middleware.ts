@@ -1,6 +1,8 @@
 
 import {NextFunction, Request, Response} from "express";
 import {body, validationResult} from "express-validator";
+import {param} from "express-validator";
+import {blogsService} from "../../domain/blogs-service";
 
 
 
@@ -52,3 +54,21 @@ export const contentValidation = body('content')
     .exists().bail().withMessage({message: "content not exist", field: "content" })
     .trim().bail().withMessage({message: "content is not string", field: "content" })
     .isLength({min: 1, max: 1000}).bail().withMessage({message: "wrong content", field: "content" })
+
+export const existBlogIdValidation = body('blogId')
+    .exists().bail().withMessage({message: "is not a string", field: "blogId" })
+    .trim().bail().withMessage({message: "wrong blogId", field: "blogId" })
+    .custom(async value => {
+        const isBlogIdExist = await blogsService.getBlogByID(value)
+        if (!isBlogIdExist) throw new Error
+        return true
+    }).withMessage({"message": "blogId not exist", "field": "blogId" })
+
+export const existParamBlogIdValidation = param('blogId')
+    .exists().bail().withMessage({message: "is not a string", field: "blogId" })
+    .trim().bail().withMessage({message: "wrong blogId", field: "blogId" })
+    .custom(async value => {
+        const isBlogIdExist = await blogsService.getBlogByID(value)
+        if (!isBlogIdExist) throw new Error
+        return true
+    }).withMessage({"message": "blogId not exist", "field": "blogId" })

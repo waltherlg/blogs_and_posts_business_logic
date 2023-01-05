@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRouter = void 0;
 const express_1 = require("express");
 const blogs_service_1 = require("../domain/blogs-service");
+const posts_service_1 = require("../domain/posts-service");
 exports.blogsRouter = (0, express_1.Router)({});
 const input_validation_middleware_1 = require("../middlewares/input-validation-middleware/input-validation-middleware");
 const input_validation_middleware_2 = require("../middlewares/input-validation-middleware/input-validation-middleware");
@@ -39,6 +40,11 @@ exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.blogsRouter.post('/', basic_auth_middleware_1.basicAuthMiddleware, input_validation_middleware_1.nameValidation, input_validation_middleware_3.descriptionValidation, input_validation_middleware_4.websiteUrlValidation, input_validation_middleware_2.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newBlog = yield blogs_service_1.blogsService.createBlog(req.body.name, req.body.description, req.body.websiteUrl);
     res.status(201).send(newBlog);
+}));
+// POST create post for specific blog
+exports.blogsRouter.post('/:blogId/posts', basic_auth_middleware_1.basicAuthMiddleware, input_validation_middleware_1.existParamBlogIdValidation, input_validation_middleware_1.titleValidation, input_validation_middleware_1.shortDescriptionValidation, input_validation_middleware_1.contentValidation, input_validation_middleware_2.inputValidationMiddleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const newPost = yield posts_service_1.postsService.createPostByBlogId(req.body.title, req.body.shortDescription, req.body.content, req.params.blogId);
+    res.status(201).send(newPost);
 }));
 //GET blog buy id
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

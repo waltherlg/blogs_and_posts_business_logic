@@ -43,6 +43,21 @@ exports.postsService = {
             return createdPost;
         });
     },
+    createPostByBlogId(title, shortDescription, content, blogId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const newPost = {
+                "_id": new mongodb_1.ObjectId(),
+                "title": title,
+                "shortDescription": shortDescription,
+                "content": content,
+                "blogId": blogId,
+                "blogName": title,
+                "createdAt": new Date().toISOString()
+            };
+            const createdPost = yield posts_repository_1.postsRepository.createPost(newPost);
+            return createdPost;
+        });
+    },
     updatePost(id, title, shortDescription, content, blogId) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield posts_repository_1.postsRepository.updatePost(id, title, shortDescription, content, blogId);

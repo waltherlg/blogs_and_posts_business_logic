@@ -32,6 +32,20 @@ export const postsService = {
         return createdPost
     },
 
+    async createPostByBlogId(title: string, shortDescription: string, content: string, blogId: string): Promise<postTypeOutput> {
+        const newPost: postType = {
+            "_id": new ObjectId(),
+            "title": title,
+            "shortDescription": shortDescription,
+            "content": content,
+            "blogId": blogId,
+            "blogName": title,
+            "createdAt": new Date().toISOString()
+        }
+        const createdPost = await postsRepository.createPost(newPost)
+        return createdPost
+    },
+
     async updatePost(
         id: string,
         title: string,

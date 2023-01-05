@@ -1,7 +1,18 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.contentValidation = exports.shortDescriptionValidation = exports.titleValidation = exports.websiteUrlValidation = exports.descriptionValidation = exports.nameValidation = exports.inputValidationMiddleware = void 0;
+exports.existParamBlogIdValidation = exports.existBlogIdValidation = exports.contentValidation = exports.shortDescriptionValidation = exports.titleValidation = exports.websiteUrlValidation = exports.descriptionValidation = exports.nameValidation = exports.inputValidationMiddleware = void 0;
 const express_validator_1 = require("express-validator");
+const express_validator_2 = require("express-validator");
+const blogs_service_1 = require("../../domain/blogs-service");
 const inputValidationMiddleware = (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
@@ -43,3 +54,21 @@ exports.contentValidation = (0, express_validator_1.body)('content')
     .exists().bail().withMessage({ message: "content not exist", field: "content" })
     .trim().bail().withMessage({ message: "content is not string", field: "content" })
     .isLength({ min: 1, max: 1000 }).bail().withMessage({ message: "wrong content", field: "content" });
+exports.existBlogIdValidation = (0, express_validator_1.body)('blogId')
+    .exists().bail().withMessage({ message: "is not a string", field: "blogId" })
+    .trim().bail().withMessage({ message: "wrong blogId", field: "blogId" })
+    .custom((value) => __awaiter(void 0, void 0, void 0, function* () {
+    const isBlogIdExist = yield blogs_service_1.blogsService.getBlogByID(value);
+    if (!isBlogIdExist)
+        throw new Error;
+    return true;
+})).withMessage({ "message": "blogId not exist", "field": "blogId" });
+exports.existParamBlogIdValidation = (0, express_validator_2.param)('blogId')
+    .exists().bail().withMessage({ message: "is not a string", field: "blogId" })
+    .trim().bail().withMessage({ message: "wrong blogId", field: "blogId" })
+    .custom((value) => __awaiter(void 0, void 0, void 0, function* () {
+    const isBlogIdExist = yield blogs_service_1.blogsService.getBlogByID(value);
+    if (!isBlogIdExist)
+        throw new Error;
+    return true;
+})).withMessage({ "message": "blogId not exist", "field": "blogId" });

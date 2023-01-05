@@ -13,13 +13,18 @@ import {
 
 export const blogsRouter = Router({})
 
-import {nameValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
+import {
+    contentValidation, existBlogIdValidation, existParamBlogIdValidation,
+    nameValidation,
+    shortDescriptionValidation,
+    titleValidation
+} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
 import {descriptionValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {websiteUrlValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {
-    createBlogModel,
+    createBlogModel, createPostModel,
     requestBlogsQueryModel, requestPostsByBlogsIdQueryModel, requestPostsQueryModel,
     updateBlogModel,
     URIParamsBlogModel,
@@ -56,8 +61,21 @@ blogsRouter.post('/',
     async (req: RequestWithBody<createBlogModel>, res: Response) => {
         const newBlog = await blogsService.createBlog(req.body.name, req.body.description, req.body.websiteUrl)
         res.status(201).send(newBlog)
-
     })
+
+// POST create post for specific blog
+
+blogsRouter.post('/:blogId/posts',
+    basicAuthMiddleware,
+    existParamBlogIdValidation,
+    titleValidation,
+    shortDescriptionValidation,
+    contentValidation,
+    inputValidationMiddleware,
+    async (req: RequestWithParamsAndBody<URIParamsIDBlogModel, createPostModel>, res: Response) => {
+        const newPost = await postsService.createPostByBlogId(req.body.title, req.body.shortDescription, req.body.content, req.params.blogId)
+        res.status(201).send(newPost)
+})
 
 //GET blog buy id
 blogsRouter.get('/:id', async (req: RequestWithParams<URIParamsBlogModel>, res: Response) => {
@@ -86,9 +104,9 @@ blogsRouter.get('/:id/posts', async (req: RequestWithParamsAndQuery<URIParamsBlo
     catch (e){
             res.status(500).send(e)
         }
-
-
 })
+
+
 
 // DELETE blog video by id
 blogsRouter.delete('/:id',
