@@ -47,8 +47,10 @@ exports.blogsRouter.post('/:blogId/posts', basic_auth_middleware_1.basicAuthMidd
     if (!foundBlog) {
         res.sendStatus(404);
     }
-    const newPost = yield posts_service_1.postsService.createPostByBlogId(req.body.title, req.body.shortDescription, req.body.content, req.params.blogId.toString());
-    res.status(201).send(newPost);
+    else {
+        const newPost = yield posts_service_1.postsService.createPostByBlogId(req.body.title, req.body.shortDescription, req.body.content, req.params.blogId.toString());
+        res.status(201).send(newPost);
+    }
 }));
 //GET blog buy id
 exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -62,19 +64,25 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
 }));
 //GET all posts by blogs id
 exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let blogId = req.params.id.toString();
-        let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt';
-        let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc';
-        let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1';
-        let pageSize = req.query.pageSize ? req.query.pageSize : '10';
-        let foundPosts = yield post_query_repository_1.postsQueryRepo.getAllPostsByBlogsID(blogId, sortBy, sortDirection, pageNumber, pageSize);
-        if (foundPosts) {
-            res.status(200).send(foundPosts);
-        }
+    let foundBlog = yield blogs_service_1.blogsService.getBlogByID(req.params.id.toString());
+    if (!foundBlog) {
+        res.sendStatus(404);
     }
-    catch (e) {
-        res.status(500).send(e);
+    else {
+        try {
+            let blogId = req.params.id.toString();
+            let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt';
+            let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc';
+            let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1';
+            let pageSize = req.query.pageSize ? req.query.pageSize : '10';
+            let foundPosts = yield post_query_repository_1.postsQueryRepo.getAllPostsByBlogsID(blogId, sortBy, sortDirection, pageNumber, pageSize);
+            if (foundPosts) {
+                res.status(200).send(foundPosts);
+            }
+        }
+        catch (e) {
+            res.status(500).send(e);
+        }
     }
 }));
 // DELETE blog video by id

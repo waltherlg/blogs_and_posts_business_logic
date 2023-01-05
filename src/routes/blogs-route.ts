@@ -76,8 +76,11 @@ blogsRouter.post('/:blogId/posts',
         if(!foundBlog){
             res.sendStatus(404)
         }
-        const newPost = await postsService.createPostByBlogId(req.body.title, req.body.shortDescription, req.body.content, req.params.blogId.toString())
-        res.status(201).send(newPost)
+        else {
+            const newPost = await postsService.createPostByBlogId(req.body.title, req.body.shortDescription, req.body.content, req.params.blogId.toString())
+            res.status(201).send(newPost)
+        }
+
 })
 
 //GET blog buy id
@@ -93,20 +96,28 @@ blogsRouter.get('/:id', async (req: RequestWithParams<URIParamsBlogModel>, res: 
 
 //GET all posts by blogs id
 blogsRouter.get('/:id/posts', async (req: RequestWithParamsAndQuery<URIParamsBlogModel, requestPostsByBlogsIdQueryModel>, res: Response) => {
-    try {
-        let blogId = req.params.id.toString()
-        let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt'
-        let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc'
-        let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1'
-        let pageSize = req.query.pageSize ? req.query.pageSize : '10'
-        let foundPosts = await postsQueryRepo.getAllPostsByBlogsID(blogId, sortBy, sortDirection, pageNumber, pageSize)
-        if(foundPosts) {
-            res.status(200).send(foundPosts)
-        }
+    let foundBlog = await blogsService.getBlogByID(req.params.id.toString())
+    if(!foundBlog){
+        res.sendStatus(404)
     }
-    catch (e){
+    else {
+        try {
+            let blogId = req.params.id.toString()
+            let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt'
+            let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc'
+            let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1'
+            let pageSize = req.query.pageSize ? req.query.pageSize : '10'
+            let foundPosts = await postsQueryRepo.getAllPostsByBlogsID(blogId, sortBy, sortDirection, pageNumber, pageSize)
+            if(foundPosts) {
+                res.status(200).send(foundPosts)
+            }
+        }
+        catch (e){
             res.status(500).send(e)
         }
+    }
+
+
 })
 
 
