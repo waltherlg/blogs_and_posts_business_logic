@@ -14,6 +14,13 @@ export type URIParamsBlogModel = {
     id: string
 }
 
+export type URIParamsIDBlogModel = {
+    /**
+     * for finding posts by blogs id
+     */
+    blogId: string
+}
+
 export type URIParamsGetPostByBlogIdModel = {
     /**
      * When you need get post by blog id
@@ -56,6 +63,13 @@ export type requestBlogsQueryModel = {
 }
 
 export type requestPostsQueryModel = {
+    sortBy: string,
+    sortDirection: string,
+    pageNumber: string,
+    pageSize: string,
+}
+
+export type requestPostsByBlogsIdQueryModel = {
     sortBy: string,
     sortDirection: string,
     pageNumber: string,

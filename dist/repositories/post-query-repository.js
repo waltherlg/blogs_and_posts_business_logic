@@ -47,5 +47,35 @@ exports.postsQueryRepo = {
             };
             return outputPosts;
         });
+    },
+    getAllPostsByBlogsID(blogId, sortBy, sortDirection, pageNumber, pageSize) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let posts = yield posts_repository_1.postCollection.find({ "blogId": blogId })
+                .skip(skipped(pageNumber, pageSize))
+                .limit(+pageSize)
+                .sort({ [sortBy]: sort(sortDirection) })
+                .toArray();
+            let outPosts = posts.map((posts) => {
+                return {
+                    id: posts._id.toString(),
+                    title: posts.title,
+                    shortDescription: posts.shortDescription,
+                    content: posts.content,
+                    blogId: posts.blogId,
+                    blogName: posts.blogName,
+                    createdAt: posts.createdAt
+                };
+            });
+            let postsCount = yield posts_repository_1.postCollection.countDocuments({ "blogId": blogId });
+            let pageCount = Math.ceil(+postsCount / +pageSize);
+            let outputPosts = {
+                pageCount: pageCount,
+                page: +pageNumber,
+                pageSize: +pageSize,
+                totalCount: pageCount,
+                items: outPosts
+            };
+            return outputPosts;
+        });
     }
 };

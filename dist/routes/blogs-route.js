@@ -19,6 +19,7 @@ const basic_auth_middleware_1 = require("../middlewares/basic-auth.middleware");
 const input_validation_middleware_3 = require("../middlewares/input-validation-middleware/input-validation-middleware");
 const input_validation_middleware_4 = require("../middlewares/input-validation-middleware/input-validation-middleware");
 const blog_query_repository_1 = require("../repositories/blog-query-repository");
+const post_query_repository_1 = require("../repositories/post-query-repository");
 // GET Returns All blogs
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -47,6 +48,23 @@ exports.blogsRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, 
     }
     else {
         res.sendStatus(404);
+    }
+}));
+//GET all posts by blogs id
+exports.blogsRouter.get('/:id/posts', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let blogId = req.params.id.toString();
+        let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt';
+        let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc';
+        let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1';
+        let pageSize = req.query.pageSize ? req.query.pageSize : '10';
+        let foundPosts = yield post_query_repository_1.postsQueryRepo.getAllPostsByBlogsID(blogId, sortBy, sortDirection, pageNumber, pageSize);
+        if (foundPosts) {
+            res.status(200).send(foundPosts);
+        }
+    }
+    catch (e) {
+        res.status(500).send(e);
     }
 }));
 // DELETE blog video by id

@@ -1,8 +1,15 @@
 import {Request, Response, Router} from "express";
 import {body} from "express-validator";
 import {blogsService} from "../domain/blogs-service";
+import {postsService} from "../domain/posts-service";
 
-import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../models/types";
+import {
+    RequestWithBody,
+    RequestWithParams,
+    RequestWithParamsAndBody,
+    RequestWithParamsAndQuery,
+    RequestWithQuery
+} from "../models/types";
 
 export const blogsRouter = Router({})
 
@@ -11,8 +18,15 @@ import {inputValidationMiddleware} from "../middlewares/input-validation-middlew
 import {basicAuthMiddleware} from "../middlewares/basic-auth.middleware";
 import {descriptionValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
 import {websiteUrlValidation} from "../middlewares/input-validation-middleware/input-validation-middleware";
-import {createBlogModel, requestBlogsQueryModel, updateBlogModel, URIParamsBlogModel} from "../models/models";
+import {
+    createBlogModel,
+    requestBlogsQueryModel, requestPostsByBlogsIdQueryModel, requestPostsQueryModel,
+    updateBlogModel,
+    URIParamsBlogModel,
+    URIParamsIDBlogModel
+} from "../models/models";
 import {blogsQueryRepo} from "../repositories/blog-query-repository";
+import {postsQueryRepo} from "../repositories/post-query-repository";
 
 
 // GET Returns All blogs
@@ -54,6 +68,26 @@ blogsRouter.get('/:id', async (req: RequestWithParams<URIParamsBlogModel>, res: 
     else {
         res.sendStatus(404)
     }
+})
+
+//GET all posts by blogs id
+blogsRouter.get('/:id/posts', async (req: RequestWithParamsAndQuery<URIParamsBlogModel, requestPostsByBlogsIdQueryModel>, res: Response) => {
+    try {
+        let blogId = req.params.id.toString()
+        let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt'
+        let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc'
+        let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1'
+        let pageSize = req.query.pageSize ? req.query.pageSize : '10'
+        let foundPosts = await postsQueryRepo.getAllPostsByBlogsID(blogId, sortBy, sortDirection, pageNumber, pageSize)
+        if(foundPosts) {
+            res.status(200).send(foundPosts)
+        }
+    }
+    catch (e){
+            res.status(500).send(e)
+        }
+
+
 })
 
 // DELETE blog video by id

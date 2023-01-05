@@ -1,7 +1,7 @@
 import {postCollection} from "./posts-repository";
 import {postType} from "../models/types";
 import {blogCollection} from "./blogs-repository";
-import {paginationPostOutputModel} from "../models/models";
+import {paginationBlogOutputModel, paginationPostOutputModel} from "../models/models";
 
 function sort(sortDirection: string){
     return (sortDirection === 'desc') ? -1 : 1;
@@ -50,7 +50,50 @@ export const postsQueryRepo = {
         }
         return outputPosts
 
+    },
+
+    async getAllPostsByBlogsID(
+        blogId: string,
+        sortBy: string,
+        sortDirection: string,
+        pageNumber: string,
+        pageSize: string,) {
+
+        let posts = await postCollection.find({"blogId": blogId})
+            .skip(skipped(pageNumber, pageSize))
+            .limit(+pageSize)
+            .sort({[sortBy]: sort(sortDirection)})
+            .toArray()
+
+        let outPosts = posts.map((posts: postType) => {
+            return {
+                id: posts._id.toString(),
+                title: posts.title,
+                shortDescription: posts.shortDescription,
+                content: posts.content,
+                blogId: posts.blogId,
+                blogName: posts.blogName,
+                createdAt: posts.createdAt
+            }
+        })
+
+        let postsCount = await postCollection.countDocuments({"blogId": blogId})
+
+        let pageCount = Math.ceil(+postsCount / +pageSize)
+
+        let outputPosts: paginationBlogOutputModel  = {
+            pageCount: pageCount,
+            page: +pageNumber,
+            pageSize: +pageSize,
+            totalCount: pageCount,
+            items: outPosts
+        }
+        return outputPosts
+
     }
+
+
+
 
 
 }

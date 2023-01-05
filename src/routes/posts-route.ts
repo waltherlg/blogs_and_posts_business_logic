@@ -5,7 +5,13 @@ import {body} from "express-validator";
 
 import {postsService} from "../domain/posts-service";
 import {blogsService} from "../domain/blogs-service";
-import {RequestWithBody, RequestWithParams, RequestWithParamsAndBody, RequestWithQuery} from "../models/types";
+import {
+    RequestWithBody,
+    RequestWithParams,
+    RequestWithParamsAndBody,
+    RequestWithParamsAndQuery,
+    RequestWithQuery
+} from "../models/types";
 import {
     createPostModel,
     requestPostsQueryModel,
