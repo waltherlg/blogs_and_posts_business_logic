@@ -22,11 +22,21 @@ export const blogsQueryRepo = {
         pageNumber: string,
         pageSize: string,) {
 
-        let blogs = await blogCollection.find({})
-            .skip(skipped(pageNumber, pageSize))
-            .limit(+pageSize)
-            .sort({[sortBy]: sort(sortDirection)})
-            .toArray()
+        let blogs
+        if (searchNameTerm !== 'null'){
+            blogs = await blogCollection.find({$text: {$search: searchNameTerm}})
+                .skip(skipped(pageNumber, pageSize))
+                .limit(+pageSize)
+                .sort({[sortBy]: sort(sortDirection)})
+                .toArray()
+        }
+        else {
+            blogs = await blogCollection.find({})
+                .skip(skipped(pageNumber, pageSize))
+                .limit(+pageSize)
+                .sort({[sortBy]: sort(sortDirection)})
+                .toArray()
+        }
 
         let outBlogs = blogs.map((blogs: blogType) => {
             return {

@@ -20,11 +20,21 @@ function skipped(pageNumber, pageSize) {
 exports.blogsQueryRepo = {
     getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
-            let blogs = yield blogs_repository_1.blogCollection.find({})
-                .skip(skipped(pageNumber, pageSize))
-                .limit(+pageSize)
-                .sort({ [sortBy]: sort(sortDirection) })
-                .toArray();
+            let blogs;
+            if (searchNameTerm !== 'null') {
+                blogs = yield blogs_repository_1.blogCollection.find({ $text: { $search: searchNameTerm } })
+                    .skip(skipped(pageNumber, pageSize))
+                    .limit(+pageSize)
+                    .sort({ [sortBy]: sort(sortDirection) })
+                    .toArray();
+            }
+            else {
+                blogs = yield blogs_repository_1.blogCollection.find({})
+                    .skip(skipped(pageNumber, pageSize))
+                    .limit(+pageSize)
+                    .sort({ [sortBy]: sort(sortDirection) })
+                    .toArray();
+            }
             let outBlogs = blogs.map((blogs) => {
                 return {
                     id: blogs._id.toString(),
