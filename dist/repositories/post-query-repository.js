@@ -72,7 +72,7 @@ exports.postsQueryRepo = {
                 pagesCount: pageCount,
                 page: +pageNumber,
                 pageSize: +pageSize,
-                totalCount: pageCount,
+                totalCount: postsCount,
                 items: outPosts
             };
             return outputPosts;
