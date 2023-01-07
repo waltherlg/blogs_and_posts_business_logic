@@ -19,6 +19,8 @@ export const postsQueryRepo = {
         pageNumber: string,
         pageSize: string,) {
 
+        let postsCount = await postCollection.countDocuments({})
+
         let posts = await postCollection.find({})
             .skip(skipped(pageNumber, pageSize))
             .limit(+pageSize)
@@ -36,8 +38,6 @@ export const postsQueryRepo = {
                 createdAt: posts.createdAt
             }
         })
-
-        let postsCount = await postCollection.countDocuments({})
 
         let pageCount = Math.ceil(+postsCount / +pageSize)
 

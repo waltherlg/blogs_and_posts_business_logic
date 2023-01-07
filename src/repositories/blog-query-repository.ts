@@ -23,6 +23,8 @@ export const blogsQueryRepo = {
         pageNumber: string,
         pageSize: string,) {
 
+        let blogsCount = await blogCollection.countDocuments({})
+
         let blogs
         if (searchNameTerm !== 'null'){
             blogs = await blogCollection.find({name: new RegExp(searchNameTerm, "gi")})
@@ -48,8 +50,6 @@ export const blogsQueryRepo = {
                 createdAt: blogs.createdAt
             }
         })
-
-        let blogsCount = await blogCollection.countDocuments({})
 
         let pageCount = Math.ceil(+blogsCount / +pageSize)
 
