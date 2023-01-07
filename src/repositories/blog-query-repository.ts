@@ -51,7 +51,7 @@ export const blogsQueryRepo = {
             }
         })
 
-        let pageCount = Math.ceil(+blogsCount / +pageSize)
+        let pageCount = Math.ceil(blogsCount / +pageSize)
 
         let outputBlogs: paginationBlogOutputModel  = {
             pagesCount: pageCount,

@@ -45,7 +45,7 @@ exports.blogsQueryRepo = {
                     createdAt: blogs.createdAt
                 };
             });
-            let pageCount = Math.ceil(+blogsCount / +pageSize);
+            let pageCount = Math.ceil(blogsCount / +pageSize);
             let outputBlogs = {
                 pagesCount: pageCount,
                 page: +pageNumber,
