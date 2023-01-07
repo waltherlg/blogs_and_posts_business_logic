@@ -77,7 +77,7 @@ export const postsQueryRepo = {
             }
         })
 
-        let postsCount = await postCollection.countDocuments({"blogId": blogId})
+        let postsCount = await postCollection.countDocuments({})
 
         let pageCount = Math.ceil(+postsCount / +pageSize)
 

@@ -20,6 +20,7 @@ function skipped(pageNumber, pageSize) {
 exports.postsQueryRepo = {
     getAllPosts(sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
+            let postsCount = yield posts_repository_1.postCollection.countDocuments({});
             let posts = yield posts_repository_1.postCollection.find({})
                 .skip(skipped(pageNumber, pageSize))
                 .limit(+pageSize)
@@ -36,7 +37,6 @@ exports.postsQueryRepo = {
                     createdAt: posts.createdAt
                 };
             });
-            let postsCount = yield posts_repository_1.postCollection.countDocuments({});
             let pageCount = Math.ceil(+postsCount / +pageSize);
             let outputPosts = {
                 pagesCount: pageCount,
@@ -66,7 +66,7 @@ exports.postsQueryRepo = {
                     createdAt: posts.createdAt
                 };
             });
-            let postsCount = yield posts_repository_1.postCollection.countDocuments({ "blogId": blogId });
+            let postsCount = yield posts_repository_1.postCollection.countDocuments({});
             let pageCount = Math.ceil(+postsCount / +pageSize);
             let outputPosts = {
                 pagesCount: pageCount,
