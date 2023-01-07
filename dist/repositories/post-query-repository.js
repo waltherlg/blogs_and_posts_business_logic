@@ -22,9 +22,9 @@ exports.postsQueryRepo = {
         return __awaiter(this, void 0, void 0, function* () {
             let postsCount = yield posts_repository_1.postCollection.countDocuments({});
             let posts = yield posts_repository_1.postCollection.find({})
+                .sort({ [sortBy]: sort(sortDirection) })
                 .skip(skipped(pageNumber, pageSize))
                 .limit(+pageSize)
-                .sort({ [sortBy]: sort(sortDirection) })
                 .toArray();
             let outPosts = posts.map((posts) => {
                 return {
@@ -66,7 +66,7 @@ exports.postsQueryRepo = {
                     createdAt: posts.createdAt
                 };
             });
-            let postsCount = yield posts_repository_1.postCollection.countDocuments({});
+            let postsCount = yield posts_repository_1.postCollection.countDocuments({ "blogId": blogId });
             let pageCount = Math.ceil(+postsCount / +pageSize);
             let outputPosts = {
                 pagesCount: pageCount,

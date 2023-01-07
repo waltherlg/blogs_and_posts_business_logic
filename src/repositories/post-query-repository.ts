@@ -22,9 +22,9 @@ export const postsQueryRepo = {
         let postsCount = await postCollection.countDocuments({})
 
         let posts = await postCollection.find({})
+            .sort({[sortBy]: sort(sortDirection)})
             .skip(skipped(pageNumber, pageSize))
             .limit(+pageSize)
-            .sort({[sortBy]: sort(sortDirection)})
             .toArray()
 
         let outPosts = posts.map((posts: postType) => {
@@ -77,7 +77,7 @@ export const postsQueryRepo = {
             }
         })
 
-        let postsCount = await postCollection.countDocuments({})
+        let postsCount = await postCollection.countDocuments({"blogId": blogId})
 
         let pageCount = Math.ceil(+postsCount / +pageSize)
 

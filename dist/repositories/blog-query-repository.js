@@ -20,7 +20,7 @@ function skipped(pageNumber, pageSize) {
 exports.blogsQueryRepo = {
     getAllBlogs(searchNameTerm, sortBy, sortDirection, pageNumber, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
-            let blogsCount = yield blogs_repository_1.blogCollection.countDocuments({});
+            let blogsCount = yield blogs_repository_1.blogCollection.countDocuments({ name: new RegExp(searchNameTerm, "gi") });
             let blogs;
             if (searchNameTerm !== 'null') {
                 blogs = yield blogs_repository_1.blogCollection.find({ name: new RegExp(searchNameTerm, "gi") })

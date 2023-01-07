@@ -23,7 +23,7 @@ export const blogsQueryRepo = {
         pageNumber: string,
         pageSize: string,) {
 
-        let blogsCount = await blogCollection.countDocuments({})
+        let blogsCount = await blogCollection.countDocuments({name: new RegExp(searchNameTerm, "gi")})
 
         let blogs
         if (searchNameTerm !== 'null'){
