@@ -24,7 +24,7 @@ export const blogsQueryRepo = {
 
         let blogs
         if (searchNameTerm !== 'null'){
-            blogs = await blogCollection.find({$text: {$search: searchNameTerm}})
+            blogs = await blogCollection.find({name: new RegExp(searchNameTerm, "gi")})
                 .skip(skipped(pageNumber, pageSize))
                 .limit(+pageSize)
                 .sort({[sortBy]: sort(sortDirection)})
@@ -53,7 +53,7 @@ export const blogsQueryRepo = {
         let pageCount = Math.ceil(+blogsCount / +pageSize)
 
         let outputBlogs: paginationBlogOutputModel  = {
-            pageCount: pageCount,
+            pagesCount: pageCount,
             page: +pageNumber,
             pageSize: +pageSize,
             totalCount: blogsCount,

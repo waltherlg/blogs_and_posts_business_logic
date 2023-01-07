@@ -77,7 +77,7 @@ export type requestPostsByBlogsIdQueryModel = {
 }
 
 export type paginationBlogOutputModel = {
-    pageCount: number,
+    pagesCount: number,
     page: number,
     pageSize: number,
     totalCount: number,
@@ -85,7 +85,7 @@ export type paginationBlogOutputModel = {
 }
 
 export type paginationPostOutputModel = {
-    pageCount: number,
+    pagesCount: number,
     page: number,
     pageSize: number,
     totalCount: number,

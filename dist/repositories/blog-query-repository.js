@@ -22,7 +22,7 @@ exports.blogsQueryRepo = {
         return __awaiter(this, void 0, void 0, function* () {
             let blogs;
             if (searchNameTerm !== 'null') {
-                blogs = yield blogs_repository_1.blogCollection.find({ $text: { $search: searchNameTerm } })
+                blogs = yield blogs_repository_1.blogCollection.find({ name: new RegExp(searchNameTerm, "gi") })
                     .skip(skipped(pageNumber, pageSize))
                     .limit(+pageSize)
                     .sort({ [sortBy]: sort(sortDirection) })
@@ -47,7 +47,7 @@ exports.blogsQueryRepo = {
             let blogsCount = yield blogs_repository_1.blogCollection.countDocuments({});
             let pageCount = Math.ceil(+blogsCount / +pageSize);
             let outputBlogs = {
-                pageCount: pageCount,
+                pagesCount: pageCount,
                 page: +pageNumber,
                 pageSize: +pageSize,
                 totalCount: blogsCount,

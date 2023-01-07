@@ -42,7 +42,7 @@ export const postsQueryRepo = {
         let pageCount = Math.ceil(+postsCount / +pageSize)
 
         let outputPosts: paginationPostOutputModel = {
-            pageCount: pageCount,
+            pagesCount: pageCount,
             page: +pageNumber,
             pageSize: +pageSize,
             totalCount: postsCount,
@@ -82,7 +82,7 @@ export const postsQueryRepo = {
         let pageCount = Math.ceil(+postsCount / +pageSize)
 
         let outputPosts: paginationBlogOutputModel  = {
-            pageCount: pageCount,
+            pagesCount: pageCount,
             page: +pageNumber,
             pageSize: +pageSize,
             totalCount: pageCount,

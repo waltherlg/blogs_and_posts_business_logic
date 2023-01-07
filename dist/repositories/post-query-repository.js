@@ -39,7 +39,7 @@ exports.postsQueryRepo = {
             let postsCount = yield posts_repository_1.postCollection.countDocuments({});
             let pageCount = Math.ceil(+postsCount / +pageSize);
             let outputPosts = {
-                pageCount: pageCount,
+                pagesCount: pageCount,
                 page: +pageNumber,
                 pageSize: +pageSize,
                 totalCount: postsCount,
@@ -69,7 +69,7 @@ exports.postsQueryRepo = {
             let postsCount = yield posts_repository_1.postCollection.countDocuments({ "blogId": blogId });
             let pageCount = Math.ceil(+postsCount / +pageSize);
             let outputPosts = {
-                pageCount: pageCount,
+                pagesCount: pageCount,
                 page: +pageNumber,
                 pageSize: +pageSize,
                 totalCount: pageCount,
