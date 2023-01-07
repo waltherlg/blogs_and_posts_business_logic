@@ -4,6 +4,7 @@ import {blogCollection, blogsRepository} from "./blogs-repository";
 import {blogType, blogTypeOutput} from "../models/types";
 import {paginationBlogOutputModel, requestBlogsQueryModel} from "../models/models";
 
+
 function sort(sortDirection: string){
     return (sortDirection === 'desc') ? -1 : 1;
 }
