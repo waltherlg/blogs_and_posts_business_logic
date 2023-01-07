@@ -24,7 +24,7 @@ const post_query_repository_1 = require("../repositories/post-query-repository")
 // GET Returns All blogs
 exports.blogsRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let searchNameTerm = req.query.searchNameTerm ? req.query.searchNameTerm : 'null';
+        let searchNameTerm = req.query.searchNameTerm ? req.query.searchNameTerm : '';
         let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt';
         let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc';
         let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1';

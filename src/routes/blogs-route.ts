@@ -37,7 +37,7 @@ import {postsQueryRepo} from "../repositories/post-query-repository";
 // GET Returns All blogs
 blogsRouter.get('/', async (req: RequestWithQuery<requestBlogsQueryModel>, res: Response) => {
     try {
-        let searchNameTerm = req.query.searchNameTerm ? req.query.searchNameTerm: 'null'
+        let searchNameTerm = req.query.searchNameTerm ? req.query.searchNameTerm: ''
         let sortBy = req.query.sortBy ? req.query.sortBy : 'createdAt'
         let sortDirection = req.query.sortDirection ? req.query.sortDirection : 'desc'
         let pageNumber = req.query.pageNumber ? req.query.pageNumber : '1'
