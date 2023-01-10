@@ -22,7 +22,7 @@ exports.postsQueryRepo = {
         return __awaiter(this, void 0, void 0, function* () {
             let postsCount = yield posts_repository_1.postCollection.countDocuments({});
             let posts = yield posts_repository_1.postCollection.find({})
-                .sort(Object.assign({ "createdAt": -1 }, { [sortBy]: sort(sortDirection) }))
+                .sort(Object.assign({ "createdAt": 1 }, { [sortBy]: sort(sortDirection) }))
                 .skip(skipped(pageNumber, pageSize))
                 .limit(+pageSize)
                 .toArray();
