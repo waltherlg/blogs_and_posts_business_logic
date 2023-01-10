@@ -22,7 +22,7 @@ export const postsQueryRepo = {
         let postsCount = await postCollection.countDocuments({})
 
         let posts = await postCollection.find({})
-            .sort({[sortBy]: sort(sortDirection)})
+            .sort({...{"createdAt": -1},[sortBy]: sort(sortDirection)})
             .skip(skipped(pageNumber, pageSize))
             .limit(+pageSize)
             .toArray()
